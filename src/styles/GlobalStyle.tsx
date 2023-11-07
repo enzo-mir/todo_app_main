@@ -24,6 +24,14 @@ export const GlobalStyle = createGlobalStyle`
             background-repeat: no-repeat;
             background-size: contain;
         }
+        sub{
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: ${(props) => props.theme.text_clr};
+            
+        }
     }
 
     button{

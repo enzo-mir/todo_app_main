@@ -6,6 +6,7 @@ import { todosStore } from "./store/todos_store";
 import darkTheme from "./styles/darkTheme";
 import lightTheme from "./styles/lightTheme";
 import CryptoJS from "crypto-js";
+
 const Wrapper = styled.main`
   position: absolute;
   top: 10vh;
@@ -123,6 +124,7 @@ function App() {
           <ListOfTodo />
         </section>
       </Wrapper>
+      <sub>Drag and drop to reorder the list</sub>
     </ThemeProvider>
   );
 }

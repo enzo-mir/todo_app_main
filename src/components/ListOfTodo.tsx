@@ -1,114 +1,122 @@
 import styled from "styled-components";
 import { todoType, todosStore, valueTodo } from "../store/todos_store";
 import deleteBtn from "../assets/images/icon-cross.svg";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CryptoJS from "crypto-js";
 
 const Wrapper = styled.article`
   box-shadow: 0px 0px 30px -20px ${(props) => props.theme.shadow};
   border-radius: 10px;
+  color: ${(props) => props.theme.text_clr};
 
   aside {
-    display: flex;
-    flex-direction: column;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    color: ${(props) => props.theme.text_clr};
-    max-height: 50vh;
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-    &::-webkit-scrollbar-track {
-    }
-    &::-webkit-scrollbar-thumb {
-      background: ${(props) => props.theme.scrollbar};
-    }
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: #fff;
-    }
-    & > div {
+    > div {
       display: flex;
       align-items: center;
       border-bottom: 1px solid ${(props) => props.theme.text_line_through};
-      display: flex;
       gap: 20px;
       background-color: ${(props) => props.theme.card_bg};
       padding: 1.2em;
-      & p {
-        width: 100%;
-      }
-      @media screen and (min-width: 900px) {
-        button {
-          transition: all 0.3s ease-out;
-          transform: translateY(-50%);
-          opacity: 0;
-          visibility: hidden;
-        }
-      }
-      @media screen and (max-width: 900px) {
-        button img {
-          width: 90%;
-        }
-      }
-      &:hover {
-        button {
-          transform: translateY(0%);
-          opacity: 1;
-          visibility: visible;
-        }
-      }
-      & > input {
-        display: none;
-      }
-      label {
-        position: relative;
-        display: grid;
-        place-items: center;
-        width: 25px;
-        aspect-ratio: 1 / 1;
-        outline: 1px solid ${(props) => props.theme.text_line_through};
-        border-radius: 50%;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-      &:not(:has(input:checked)) label:hover {
-        outline: none;
-        background: ${(props) => props.theme.gradient_check};
-        &::after {
-          content: "";
-          position: absolute;
-          width: calc(100% - 2px);
-          aspect-ratio: 1 / 1;
-          background: ${(props) => props.theme.card_bg};
-          background-position: center;
-          background-size: 75%;
-          background-repeat: no-repeat;
-          border-radius: 50%;
-          z-index: 5;
-        }
-      }
+    }
+    ul {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      max-height: 50vh;
+      overflow-y: auto;
 
-      &:has(input:checked) {
-        p {
-          text-decoration: line-through;
-          color: ${(props) => props.theme.text_line_through};
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+      &::-webkit-scrollbar-track {
+      }
+      &::-webkit-scrollbar-thumb {
+        background: ${(props) => props.theme.scrollbar};
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background-color: #fff;
+      }
+      & > li {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid ${(props) => props.theme.text_line_through};
+        gap: 20px;
+        background-color: ${(props) => props.theme.card_bg};
+        padding: 1.2em;
+
+        & p {
+          width: 100%;
+        }
+        @media screen and (min-width: 900px) {
+          button {
+            transition: all 0.3s ease-out;
+            transform: translateY(-50%);
+            opacity: 0;
+            visibility: hidden;
+          }
+        }
+        @media screen and (max-width: 900px) {
+          button img {
+            width: 90%;
+          }
+        }
+        &:hover {
+          button {
+            transform: translateY(0%);
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+        & > input {
+          display: none;
         }
         label {
-          background: ${(props) => props.theme.gradient_check};
+          position: relative;
+          display: grid;
+          place-items: center;
+          width: 25px;
+          aspect-ratio: 1 / 1;
+          outline: 1px solid ${(props) => props.theme.text_line_through};
+          border-radius: 50%;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        &:not(:has(input:checked)) label:hover {
           outline: none;
+          background: ${(props) => props.theme.gradient_check};
           &::after {
             content: "";
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: url(${(props) => props.theme.image_checker});
+            width: calc(100% - 2px);
+            aspect-ratio: 1 / 1;
+            background: ${(props) => props.theme.card_bg};
             background-position: center;
             background-size: 75%;
             background-repeat: no-repeat;
             border-radius: 50%;
+            z-index: 5;
+          }
+        }
+
+        &:has(input:checked) {
+          p {
+            text-decoration: line-through;
+            color: ${(props) => props.theme.text_line_through};
+          }
+          label {
+            background: ${(props) => props.theme.gradient_check};
+            outline: none;
+            &::after {
+              content: "";
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              background: url(${(props) => props.theme.image_checker});
+              background-position: center;
+              background-size: 75%;
+              background-repeat: no-repeat;
+              border-radius: 50%;
+            }
           }
         }
       }
@@ -137,7 +145,8 @@ const Wrapper = styled.article`
           }
         }
         &:hover {
-          cursor: pointer;
+          cursor: grab;
+
           &:not(&.current) {
             button {
               color: ${(props) => props.theme.active_link_hover};
@@ -167,7 +176,36 @@ const Wrapper = styled.article`
 export default function ListOfTodo() {
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const [todos, setTodos] = todosStore((state) => [state.todos, state.setTodos]);
+  const t: todoType = filter === "all" ? todos : filter === "active" ? todos.filter((x) => !x.complete) : todos.filter((x) => x.complete);
+  const [filteredState, setFilteredState] = useState<todoType>(t);
+  const draggingPos = useRef<number>();
+  const dragOverPos = useRef<number | null>(null);
 
+  useEffect(() => {
+    setFilteredState(t);
+  }, [filter, t, todos]);
+
+  const handleDragEnter = (position: number) => {
+    dragOverPos.current = position;
+    const newItems = [...filteredState];
+    const draggingItem = newItems[draggingPos.current!];
+    if (!draggingItem) return;
+
+    newItems.splice(draggingPos.current!, 1);
+    newItems.splice(dragOverPos.current!, 0, draggingItem);
+
+    const reorderedItems = newItems.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+
+    draggingPos.current = position;
+    dragOverPos.current = null;
+
+    setTodos(reorderedItems);
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(reorderedItems), "mysecretkey").toString();
+    sessionStorage.setItem("session_todo", encryptedData);
+  };
   function changeTodosInformation(todo: valueTodo, e: React.ChangeEvent | null, type: "delete" | "complete") {
     const obj = [...todos];
     for (let i = 0; i < obj.length; i++) {
@@ -208,34 +246,39 @@ export default function ListOfTodo() {
     },
   ];
 
-  function FilteredList() {
-    const table: todoType = filter === "all" ? todos : filter === "active" ? todos.filter((x) => !x.complete) : todos.filter((x) => x.complete);
-
-    return table.map((todo) => {
-      return (
-        <div key={todo.id}>
-          <label htmlFor={`checker${todo.id.toString()}`}></label>
-          <input
-            type="checkbox"
-            name={`checker${todo.id.toString()}`}
-            id={`checker${todo.id.toString()}`}
-            defaultChecked={todo.complete}
-            onChange={(e) => changeTodosInformation(todo, e, "complete")}
-          />
-          <p>{todo.value}</p>
-          <button onClick={() => changeTodosInformation(todo, null, "delete")}>
-            <img src={deleteBtn} alt="" />
-          </button>
-        </div>
-      );
-    });
-  }
-
   return (
     <Wrapper>
       <aside>
         {todos.length ? (
-          <FilteredList />
+          <ul>
+            {todos.map((todo, index) => {
+              return (todo.complete && filter === "completed") || (!todo.complete && filter === "active") || filter == "all" ? (
+                <li
+                  key={todo.id}
+                  className="item"
+                  draggable
+                  onDragStart={() => {
+                    draggingPos.current = index;
+                  }}
+                  onDragEnter={() => handleDragEnter(index)}
+                  onDragOver={(e) => e.preventDefault()}
+                >
+                  <label htmlFor={`checker${todo.id.toString()}`}></label>
+                  <input
+                    type="checkbox"
+                    name={`checker${todo.id.toString()}`}
+                    id={`checker${todo.id.toString()}`}
+                    defaultChecked={todo.complete}
+                    onChange={(e) => changeTodosInformation(todo, e, "complete")}
+                  />
+                  <p>{todo.value}</p>
+                  <button onClick={() => changeTodosInformation(todo, null, "delete")}>
+                    <img src={deleteBtn} alt="" />
+                  </button>
+                </li>
+              ) : null;
+            })}
+          </ul>
         ) : (
           <div>
             <p>No todo</p>
